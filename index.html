@@ -108,8 +108,8 @@
     function copyToClipboard() {
         const command = `
 # Ruta de las imágenes locales
-$desktopImagePath = "$env:LOCALAPPDATA\Temp\wallpaper.jpg"
-$lockScreenImagePath = "$env:LOCALAPPDATA\Temp\lockscreen.jpg"
+$desktopImagePath = "$env:LOCALAPPDATA\Tempwallpaper.jpg"
+$lockScreenImagePath = "$env:LOCALAPPDATA\Templockscreen.jpg"
 
 # URLs de las imágenes
 $desktopImageURL = "https://static1.e621.net/data/32/a3/32a36832c9d7918c621ec0f363e924b2.jpg"
@@ -120,19 +120,18 @@ Invoke-WebRequest -Uri $desktopImageURL -OutFile $desktopImagePath
 Invoke-WebRequest -Uri $lockScreenImageURL -OutFile $lockScreenImagePath
 
 # Habilitar la política de fondo de pantalla de bloqueo
-$policyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
-if (-not (Test-Path $policyPath)) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows" -Name "Personalization" -Force | Out-Null
-}
+$policyPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" 
+$keyName = "LockScreenImagePath" 
+New-Item -Path $policyPath -Name $keyName -Force | Out-Null
 
 # Configurar políticas necesarias
 Set-ItemProperty -Path $policyPath -Name "NoLockScreen" -Value 0 -Force | Out-Null
-Set-ItemProperty -Path $policyPath -Name "LockScreenImage" -Value $lockScreenImagePath -Force | Out-Null
+Set-ItemProperty -Path "$policyPath" -Name $keyName -Value $lockScreenImagePath
 
 # Habilitar la política de usar una imagen específica para la pantalla de bloqueo
-$policyControlPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Control Panel\Desktop"
+$policyControlPath = "HKLM:SOFTWARE\Policies\Microsoft\Windows\Control PanelDesktop"
 if (-not (Test-Path $policyControlPath)) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows" -Name "Control Panel\Desktop" -Force | Out-Null
+    New-Item -Path "HKLM:SOFTWARE\Policies\Microsoft\Windows" -Name "Control PanelDesktop" -Force | Out-Null
 }
 
 Set-ItemProperty -Path $policyControlPath -Name "ScreenSaveActive" -Value 1 -Force | Out-Null
